@@ -17,7 +17,7 @@ const authUtils = require('../utils/122-auth-utils');
 
 const sequelize = new Sequelize('users', 'postgres', 'postgres', {
     dialect: 'postgres',
-    // logging: false
+    logging: false
 });
 
 const User = UserModel(sequelize, Sequelize)
