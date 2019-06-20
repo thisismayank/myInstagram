@@ -9,7 +9,7 @@ const authUtils = require('../utils/122-auth-utils');
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = 'secretKey';
 
-const { User} = require('../sequelize');
+const { User } = require('../sequelize');
 
 const emailUtils = require('../utils/133-email-utils');
 
@@ -60,7 +60,8 @@ router.post('/generateOTP', (req, res) => {
         return user.save()
     })
         .then(data=>{
-        let text = `Go to ${body.url}/verifyOTP and enter ${otp.otp}`;        
+        let url = body.url || 'localhost:3000';
+        let text = `Go to ${url}/verifyOTP and enter ${otp.otp}`;        
         let emailUtility = emailUtils.sendEmail(data.dataValues.email, text);
             emailUtility.transporter.sendMail(emailUtility.mailOptions, (err, data)=>{
                 if(err) {
@@ -73,6 +74,7 @@ router.post('/generateOTP', (req, res) => {
 })
 
 router.post('/verifyOTP', (req, res)=>{
+    let check = false;
     User.findOne({
         where: {
             userCode: req.body.userCode,
@@ -81,11 +83,30 @@ router.post('/verifyOTP', (req, res)=>{
         }
     })
     .then((user, err) => {
-        if(err) {
-            res.status(401).send('Wrong Usercode');
+        if(err || !user) {
+            check = true;
+            return User.findOne({where: {userCode: req.body.userCode, isActive: true}});
+        } else {
+            user.otp = null;
+            return user.save();
         }
-        res.status(200).send('User authenticated');
-    });
+    })
+    .then((user, err)=>{
+        if(err) {
+            res.status(401).send('Some error occured');
+        }
+        if(check) {
+            user.loginRetryCount = user.loginRetryCount + 1;
+            return user.save();
+        } else {
+            res.status(200).send({success: true, redirectTo: '/login'});
+        }
+    })
+    .then((user, err)=>{
+        if(check) {
+            res.redirect('/');
+        }
+    })
 });
 
 router.post('/signup', (req, res)=>{
@@ -111,6 +132,7 @@ router.post('/signup', (req, res)=>{
             password: body.password ? authUtils.hashPassword(body.password).toString():null,
             userCode: body.userCode ? body.userCode.toString(): null,
             isActive: true,
+            isRoot: false,
             dob: body.dob ? body.dob : null,
             otp: otp,
             loginRetryCount: 0
@@ -121,8 +143,10 @@ router.post('/signup', (req, res)=>{
             if(!user) {
                 res.status(400).send('User not created');
             }
-            let text = `Go to ${body.url}/verifyOTP and enter ${otp}`;
-            res.status(200).send('User created successfully');
+    
+            let url = body.url || 'localhost:3000';
+            let text = `Go to ${url}/verifyOTP and enter ${otp}`;
+           
             let emailUtility = emailUtils.sendEmail(user.dataValues.email, text);
             emailUtility.transporter.sendMail(emailUtility.mailOptions, (err, data)=>{
                 if(err) {
@@ -160,20 +184,33 @@ router.put('/updateEmail', (req, res)=>{
     let userCode = jwt.verify(JSON.parse(req.body.token), SECRET_KEY).userCode;
 
     let body = req.body;
+    let otp = authUtils.generateOTP();
         let data = {
-            email: email.toString()
+            email: body.email.toString(),
+            otp: otp
         };
 
         return User.update(data, {
             where: {
-                userCode: userCode
+                userCode: userCode,
             } 
         })
-        .then((user) => {
-            if(!user) {
+        .then((user, err) => {
+            if(err || !user) {
                 res.status(400).send('Email not updated');
             }
-            res.status(200).send('Email updated successfully');
+
+            let url = body.url || 'localhost:3000';
+            let text = `Go to ${url}/verifyOTP and enter ${otp} to authenticate account`;
+            let emailUtility = emailUtils.sendEmail(body.email, text);
+            emailUtility.transporter.sendMail(emailUtility.mailOptions, (err, data)=>{
+                if(err) {
+                    res.status(400).send('Email not updated');
+                } else {
+                    res.status(200).send('Email updated, check email for otp');
+                }
+            });
+
         });
 });
 

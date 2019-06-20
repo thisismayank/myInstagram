@@ -4,10 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     return sequelize.define('users', {
         firstName: DataTypes.STRING,
         lastName: DataTypes.STRING,
-        email: {
-            type: DataTypes.STRING,
-            unique: true
-        },
+        email: DataTypes.STRING,
         password: DataTypes.STRING,
         userCode: {
             type: DataTypes.STRING,
@@ -15,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         dob: DataTypes.DATE,
         isActive: DataTypes.BOOLEAN,
+        isRoot: DataTypes.BOOLEAN,
         otp: DataTypes.INTEGER,
         loginRetryCount: DataTypes.INTEGER
     });

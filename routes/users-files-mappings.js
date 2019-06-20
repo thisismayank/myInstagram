@@ -41,12 +41,13 @@ router.post('/likes/:id', (req, res)=> {
     });
 })
 
-router.post('/unlikes/:id', (req, res)=> {
+router.post('/dislikes/:id', (req, res)=> {
     let fileId = req.params.id;
     let userId = jwt.verify(JSON.parse(req.body.token), SECRET_KEY).id;
  
     userFileMapping.findOne({
         where: {
+            userId: userId,
             fileId: fileId
         }
     })
@@ -65,7 +66,7 @@ router.post('/unlikes/:id', (req, res)=> {
 
 router.post('/favorites', (req, res) => {
     let userId = jwt.verify(JSON.parse(req.body.token), SECRET_KEY).id;
-
+    
     userFileMapping.findAll({
         where:{
             userId: userId,
@@ -88,16 +89,6 @@ router.post('/favorites', (req, res) => {
         .then(favoritedFiles=>{
 
         res.json(favoritedFiles);
-    });
-});
-
-router.get('/fetchFiles', (req, res) => {
-    File.findAll()
-    .then((files,err) => {
-        if(err) {
-            res.status(401).send('files not found');
-        }
-        res.json(files);
     });
 });
 
