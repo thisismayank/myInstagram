@@ -13,14 +13,6 @@ import UpdateEmail from '././components/UpdateEmail/UpdateEmail';
 import Favorites from '././components/Favorites/Favorites';
 import NotFound from '././components/NotFound/NotFound';
 
-
-
-
-
-
-import NotFound from '././components/NotFound/NotFound';
-
-
 const Routes = () => (
   <BrowserRouter >
       <Switch>

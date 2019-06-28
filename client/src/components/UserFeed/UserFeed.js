@@ -28,6 +28,7 @@ class WelcomeFeed extends Component {
               <div className="class4">
                 <p className="file-name">
                 <b>{data.fileName}</b>
+                {/* <img src={''}> */}
                 {/* <Linkify>{data.feed}</Linkify> */}
                 <br/>
                 

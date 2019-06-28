@@ -70,11 +70,12 @@ router.post('/verifyToken', (req, res)=>{
 
 
 router.post('/login', (req, res)=>{
-    console.log(req.body);
-    console.log(JSON.parse(Object.keys(req.body)[0]));
+    // console.log(req.body);
+    // console.log(JSON.parse(Object.keys(req.body)[0]));
 
+    // let body = req.body;
     let body = JSON.parse(Object.keys(req.body)[0]);
-    console.log(body);
+    // console.log(body);
     User.findOne({
         where: {
             userCode: body.userCode,
@@ -171,16 +172,16 @@ router.post('/generateOTP', (req, res) => {
         // console.log(userData);
         let url = body.url || 'localhost:3000';
         let text = `Your forgot password OTP is ${otp}`;        
-        console.log(text);
-        res.status(200).send({success: true, message: text});
-        // let emailUtility = emailUtils.sendEmail(userData.email, text);
-        // emailUtility.transporter.sendMail(emailUtility.mailOptions, (err, data)=>{
-        //     if(err) {
-        //         res.status(200).send('email not sent');
-        //     } else {
-        //         res.status(200).send({success: true, message:'Email generated and sent, check email for otp', data: userCode});
-        //     }
-        // });
+        // console.log(text);
+        // res.status(200).send({success: true, message: text});
+        let emailUtility = emailUtils.sendEmail(userData.email, text);
+        emailUtility.transporter.sendMail(emailUtility.mailOptions, (err, data)=>{
+            if(err) {
+                res.status(200).send('email not sent');
+            } else {
+                res.status(200).send({success: true, message:'Email generated and sent, check email for otp', data: userCode});
+            }
+        });
     });
 });
 
@@ -209,7 +210,7 @@ router.post('/verifyOTP', (req, res)=>{
     })
     .then((user, err) => {
         if(err || !user) {
-    console.log('here1');
+    // console.log('here1');
 
             check = true;
             return User.findOne({where: {email: body.email, isActive: true}});
@@ -226,7 +227,7 @@ router.post('/verifyOTP', (req, res)=>{
             user.loginRetryCount = user.loginRetryCount + 1;
             return user.save();
         } else {
-            console.log('here');            
+            // console.log('here');            
             res.status(200).send({success: true, redirectTo: '/login'});
         }
     })
@@ -239,7 +240,8 @@ router.post('/verifyOTP', (req, res)=>{
 
 router.post('/signup', (req, res)=>{
 
-    let body = req.body;
+    let body = JSON.parse(Object.keys(req.body)[0]);
+    // console.log(body);
     let otp;
     User.findOne({
         where: {
@@ -250,7 +252,7 @@ router.post('/signup', (req, res)=>{
     })
     .then((user, err) => {
         if(user) {
-            res.status(400).send('User already exists');
+            res.status(200).send({success: false, message: 'User already exists'});
         }
         otp = authUtils.generateOTP();
         let data = {
@@ -269,7 +271,7 @@ router.post('/signup', (req, res)=>{
     })
         .then((user) => {
             if(!user) {
-                res.status(400).send('User not created');
+                res.status(200).send({success: false, message:'User not created'});
             }
     
             let url = body.url || 'localhost:3000';
@@ -278,9 +280,9 @@ router.post('/signup', (req, res)=>{
             let emailUtility = emailUtils.sendEmail(user.dataValues.email, text);
             emailUtility.transporter.sendMail(emailUtility.mailOptions, (err, data)=>{
                 if(err) {
-                    res.status(400).send('User not created');
+                    res.status(200).send({success: false, message: 'User not created'});
                 } else {
-                    res.status(200).send('User created, check email for otp');
+                    res.status(200).send({success: true, message:'User created, check email for otp'});
                 }
             });
         });

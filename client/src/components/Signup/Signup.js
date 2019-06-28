@@ -9,10 +9,12 @@ class Signup extends Component {
     super(props);
    
     this.state = {
-     username: '',
+      firstName: '',
+      lastName: '',
+     userCode: '',
      password: '',
      email: '',
-     name: '',
+     dob: '',
      redirectToReferrer: false
     };
 
@@ -23,14 +25,13 @@ class Signup extends Component {
  
 
   signup() {
-    if(this.state.username && this.state.password && this.state.email && this.state.name){
+    if(this.state.userCode && this.state.password && this.state.email) {
     PostData('signup',this.state).then((result) => {
       let responseJson = result;
-      if(responseJson.userData){         
-        localStorage.setItem('token',JSON.stringify(responseJson));
+      if(responseJson.success) {         
+        // localStorage.setItem('token',JSON.stringify(responseJson));
         this.setState({redirectToReferrer: true});
-      }
-      
+      }  
      });
     }
   }
@@ -44,21 +45,22 @@ class Signup extends Component {
       return (<Redirect to={'/home'}/>)
     }
    
-  
-
     return (
       
       <div className="row " id="Body">
         <div className="medium-5 columns left">
         <h4>Signup</h4>
-        <label>Email</label>
+        {/* <label>First Name</label> */}
+        <input type="text" name="firstName"  placeholder="First Name" onChange={this.onChange}/>
+        {/* <label>Last Name</label> */}
+        <input type="text" name="lastName"  placeholder="Last Name" onChange={this.onChange}/>
+        {/* <label>Email</label> */}
         <input type="text" name="email"  placeholder="Email" onChange={this.onChange}/>
-        <label>Name</label>
-        <input type="text" name="name"  placeholder="Name" onChange={this.onChange}/>
-        <label>Username</label>
-        <input type="text" name="username" placeholder="Username" onChange={this.onChange}/>
-        <label>Password</label>
+        {/* <label>Usern</label> */}
+        <input type="text" name="userCode" placeholder="User Code" onChange={this.onChange}/>
+        {/* <label>Password</label> */}
         <input type="password" name="password"  placeholder="Password" onChange={this.onChange}/>
+        <input type="date" name="dob"  placeholder="DOB" onChange={this.onChange}/>
         
         <input type="submit" className="button" value="Sign Up" onClick={this.signup}/>
         <a href="/login">Login</a>

@@ -19,8 +19,11 @@ router.post('/uploadFiles', (req, res)=> {
         res.status(401).send('Only root is authorized');
     }
 
+    let description = req.bidy.description ? req.body.description : '';
     let data = {
-        fileName: req.body.fileName.toString()
+        fileName: req.body.fileName.toString(),
+        description: description,
+        numberOfLikes: 0
     };
 
     File.create(data)
@@ -36,7 +39,7 @@ router.post('', (req, res) => {
         if(err) {
             res.status(401).send('files not found');
         }
-        console.log(files);
+        // console.log(files);
         res.json(files);
     });
 });

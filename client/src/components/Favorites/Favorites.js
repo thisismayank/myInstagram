@@ -24,7 +24,8 @@ class Favorites extends Component {
       viewFavorites: false,
       checkDone: false,
       favoritesFetched: false,
-      user: false
+      user: false,
+      back: false
     };
 
     // this.getFiles = this.getFiles.bind(this);
@@ -137,8 +138,7 @@ class Favorites extends Component {
     };
     PostData(url, data).then((result) => {
       let responseJson = result;
-      // this.setState({data: responseJson.feedData});
-      console.log(this.state);
+      window.location.reload();
     });
   }
 
@@ -149,7 +149,9 @@ class Favorites extends Component {
 
   }
 
-
+  goBack = () => {
+    this.setState({back: true});
+  }
 
   render() {
     if(!this.state.isAuthorized && this.state.checkDone){
@@ -164,6 +166,10 @@ class Favorites extends Component {
       return (<Redirect to={'/update'}/>)
     }
 
+    if(this.state.back) {
+      return (<Redirect to={'/home'} />)
+    }
+
     // if(this.state.filesFetched) {
       return (
         <div className="row" id="Body">
@@ -171,6 +177,8 @@ class Favorites extends Component {
           <a href="" onClick={this.logout} className="logout">Logout</a>
           <a href="" onClick={this.update} className="logout">Update</a>
           <a href="" onClick={this.viewFavoritesFunction} className="logout">View Favorites</a>
+          <a href="" onClick={this.goBack} className="goBack">Go Back</a>
+
           </div>
        <UserFeed feedData = {this.state.data} onLike={this.like} onDisLike={this.disLike} />
       {/* {!this.state.viewFavorites && <WelcomeFeed feedData = {this.state.data} onLike={this.like} onDisLike={this.disLike} btnDisable={false}/> } */}

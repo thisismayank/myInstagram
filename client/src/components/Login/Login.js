@@ -28,10 +28,12 @@ class Login extends Component {
 
   // On initialization
   componentWillMount() {
-    this.isAuthorizedFunction();
-    if(this.state.isAuthorized) {
-      this.getUserFiles()
+    // this.isAuthorizedFunction();
+    let token = localStorage.getItem('token');
+    if(token) {
+      this.isAuthorizedFunction();
     }
+    // this.getUserFiles()
    }
 
    // check for authorization
@@ -60,7 +62,7 @@ class Login extends Component {
       }
       PostData('login', state).then((result) => {
        let responseJson = result;
-       if (!responseJson.success && responseJson.redirectTo === 'verifyOtp') {
+       if (!responseJson.success && responseJson.redirectTo === 'verifyOTP') {
          this.setState({accountActivationPending: true});
        } else if (responseJson.token) { 
         // if(responseJson.userData.token) {        

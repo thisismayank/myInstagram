@@ -6,7 +6,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             unique: true
         },
-        description: DataTypes.STRING
+        description: DataTypes.STRING,
+        numberOfLikes: DataTypes.INTEGER
     });
 
     // File.associate = function(models) {

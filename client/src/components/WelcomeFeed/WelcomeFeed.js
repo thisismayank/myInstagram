@@ -12,7 +12,7 @@ class WelcomeFeed extends Component {
 
   render() {
     
-  {console.log('props',this.props)}
+  // {console.log('props',this.props)}
     let userFeed = this
       .props
       .feedData
@@ -43,10 +43,10 @@ class WelcomeFeed extends Component {
               <i className="fa fa-user-times" aria-hidden="true"></i>
               Like
             </button>
-            {/* <button className="button secondary small btnConfig" disabled={this.props.btnDisbale} onClick={() => this.props.onDisLike(data.id)} >
+            <button>
               <i className="fa fa-user-times" aria-hidden="true"></i>
-              DisLike
-            </button> */}
+              {data.numberOfLikes}
+            </button>
               </div>
             </div>
             }

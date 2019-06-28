@@ -10,7 +10,7 @@ class VerifyOtp extends Component {
     super(props);
     this.state = {
       otp: null,
-    //   userCode: '',
+      userCode: '',
       newPassword: '',
       confirmPassword: '',
       redirectToReferrer: false,
@@ -91,7 +91,7 @@ class VerifyOtp extends Component {
   verifyOtpFunction() {
     let state = {
     //   token: this.state.token,
-      userCode: this.props.userCode,
+      userCode: this.state.userCode,
       email: this.state.email,
       otp: this.state.otp
     }
@@ -140,6 +140,7 @@ class VerifyOtp extends Component {
           <div className="medium-5 columns left">
           <h4>Account Activation</h4>
           {!this.state.otpVerified && <input type="email" name="email"  placeholder="Email" onChange={this.onChange}/> }
+          {!this.state.otpVerified && <input type="text" name="userCode"  placeholder="User Code" onChange={this.onChange}/> }          
           {!this.state.otpVerified && <input type="number" name="otp"  placeholder="OTP" onChange={this.onChange}/> }
           {/* {!this.state.otpVerified && <input type="text" name="userCode"  placeholder="User Code" onChange={this.onChange}/> }           */}
           {!this.state.otpVerified && <input type="submit" className="button success" value="Verify OTP" onClick={this.verifyOtpFunction}/> }

@@ -23,7 +23,7 @@ router.post('/likes/:id', (req, res)=> {
     let payload = null;  
     let userId;
     let error = false;
-    console.log(jwt.verify(JSON.parse(body.token), SECRET_KEY));
+    // console.log(jwt.verify(JSON.parse(body.token), SECRET_KEY));
 
     if(body.token) {
         try {
@@ -40,7 +40,7 @@ router.post('/likes/:id', (req, res)=> {
         userId = payload.id
     }
 
-    console.log(userId);
+    // console.log(userId);
 
     userFileMapping.findOne({
         where: {
@@ -55,10 +55,23 @@ router.post('/likes/:id', (req, res)=> {
             return file.save();
         } else {   
             return userFileMapping.create({fileId: fileId, userId: userId, isActive: true})
-    }
-})
+        }
+    })
+    .then((file) => {
+        // console.log(file.dataValues.fileId);
+        return File.findOne({
+            where:{
+                id:file.dataValues.fileId
+            }
+        });
+    })
+    .then((file)=>{
+        // console.log(file.dataValues);
+        file.numberOfLikes = file.numberOfLikes + 1;
+        return file.save();
+    })
     .then(file => {
-        console.log('file saved', file);
+        // console.log('file saved', file);
         res.status(200).send({success: true, message:'File Liked Successfully'});
     });
 })
@@ -91,14 +104,25 @@ router.post('/dislikes/:id', (req, res)=> {
     })
     .then((userFile, err) =>{
         if(err) {
-            res.status(401).send('Like it before you can unlike it');
+            res.status(201).send({success: false, message:'Like it before you can unlike it'});
         }
         userFile.isActive = false;
         return userFile.save();
     })
+    .then((file) => {
+        return File.findOne({
+            where:{
+                id:file.dataValues.fileId
+            }
+        });
+    })
+    .then((file)=>{
+        file.numberOfLikes = file.numberOfLikes - 1;
+        return file.save();
+    })
     .then(file => {
 
-        res.status(200).send('File Unliked Successfully');
+        res.status(200).send({success:true,message:'File Unliked Successfully'});
     });
 })
 
