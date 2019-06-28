@@ -29,13 +29,14 @@ router.post('/uploadFiles', (req, res)=> {
     });
 })
 
-router.get('/', (req, res) => {
+router.post('', (req, res) => {
 
     File.findAll()
     .then((files,err) => {
         if(err) {
             res.status(401).send('files not found');
         }
+        console.log(files);
         res.json(files);
     });
 });

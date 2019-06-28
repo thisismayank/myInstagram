@@ -16,7 +16,7 @@ module.exports = {
         let mailOptions = {
             from: process.env.EMAIL,
             to: to,
-            to: to,
+            // to: to,
             subject: 'OTP verification',
             text: text
         };

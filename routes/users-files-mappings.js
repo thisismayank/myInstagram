@@ -19,8 +19,29 @@ router.use(cors());
 
 router.post('/likes/:id', (req, res)=> {
     let fileId = req.params.id;
-    let userId = jwt.verify(JSON.parse(req.body.token), SECRET_KEY).id;
- 
+    let body = JSON.parse(Object.keys(req.body)[0]);  
+    let payload = null;  
+    let userId;
+    let error = false;
+    console.log(jwt.verify(JSON.parse(body.token), SECRET_KEY));
+
+    if(body.token) {
+        try {
+            payload = jwt.verify(JSON.parse(body.token), SECRET_KEY);
+        } catch(err) {
+            error = true; 
+        }
+    }
+
+    // console.log()
+    if(error) {
+        res.status(200).send({success: false, message: 'unauthorized', redirectTo:'login'});
+    } else {
+        userId = payload.id
+    }
+
+    console.log(userId);
+
     userFileMapping.findOne({
         where: {
             fileId: fileId,
@@ -28,6 +49,7 @@ router.post('/likes/:id', (req, res)=> {
         }
     })
     .then((file,err)=>{
+        // console.log('file', file);
         if(file) {
             file.isActive = true;
             return file.save();
@@ -36,15 +58,31 @@ router.post('/likes/:id', (req, res)=> {
     }
 })
     .then(file => {
-
-        res.status(200).send('File Liked Successfully');
+        console.log('file saved', file);
+        res.status(200).send({success: true, message:'File Liked Successfully'});
     });
 })
 
 router.post('/dislikes/:id', (req, res)=> {
-    let fileId = req.params.id;
-    let userId = jwt.verify(JSON.parse(req.body.token), SECRET_KEY).id;
- 
+    let fileId = req.params.id;   
+    let body = JSON.parse(Object.keys(req.body)[0]);  
+    let payload = null;  
+    let userId; 
+    let error = false;
+    if(body.token) {
+        try {
+            payload = jwt.verify(JSON.parse(body.token), SECRET_KEY);
+        } catch(err) {
+            error = true; 
+        }
+    }
+
+    if(error) {
+        res.status(200).send({success: false, message: 'unauthorized', redirectTo:'login'});
+    } else {
+        userId = payload.id
+    }
+
     userFileMapping.findOne({
         where: {
             userId: userId,
@@ -65,7 +103,23 @@ router.post('/dislikes/:id', (req, res)=> {
 })
 
 router.post('/favorites', (req, res) => {
-    let userId = jwt.verify(JSON.parse(req.body.token), SECRET_KEY).id;
+    let body = JSON.parse(Object.keys(req.body)[0]);  
+    let payload = null;  
+    let userId; 
+    let error = false;
+    if(body.token) {
+        try {
+            payload = jwt.verify(JSON.parse(body.token), SECRET_KEY);
+        } catch(err) {
+            error = true; 
+        }
+    }
+
+    if(error) {
+        res.status(200).send({success: false, message: 'unauthorized', redirectTo:'login'});
+    } else {
+        userId = payload.id
+    }
     
     userFileMapping.findAll({
         where:{
@@ -86,8 +140,7 @@ router.post('/favorites', (req, res) => {
             }
         });
     })
-        .then(favoritedFiles=>{
-
+    .then(favoritedFiles=>{
         res.json(favoritedFiles);
     });
 });
