@@ -150,9 +150,6 @@ class Home extends Component {
     this.setState({viewFavorites:true});
   }
 
-  goBack = () => {
-    this.setState({back: true});
-  }
 
 
   render() {
@@ -172,9 +169,6 @@ class Home extends Component {
       return (<Redirect to={'/favorites'}/>)
     }
 
-    if(this.state.back) {
-      return (<Redirect to={'/home'} />)
-    }
     // if(this.state.filesFetched) {
       return (
         <div className="row" id="Body">
@@ -182,7 +176,6 @@ class Home extends Component {
           <a href="" onClick={this.logout} className="logout">Logout</a>
           <a href="" onClick={this.update} className="logout">Update</a>
           <a href="" onClick={this.viewFavorites} className="logout">View Favorites</a>
-          <a href="" onClick={this.goBack} className="goBack">Go Back</a>
 
           </div>
       {/* {this.state.viewFavorites && this.state.favoritesFetched && <UserFeed feedData = {this.state.data} onLike={this.like} onDisLike={this.disLike} /> } */}

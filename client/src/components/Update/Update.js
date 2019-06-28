@@ -23,7 +23,8 @@ class Update extends Component {
       updatePassword: false,
       updateEmail: false,
       isAuthorized: false,
-      checkDone: false
+      checkDone: false,
+      back: false
      };
  
     //  this.update = this.update.bind(this);
@@ -66,6 +67,10 @@ class Update extends Component {
     this.setState({updatePassword: true});
   }
 
+  goBack = () => {
+    this.setState({back: true});
+  }
+
   render() {
     // if(this.state.checkDone) {
     if(!this.state.isAuthorized && this.state.checkDone) {
@@ -79,10 +84,15 @@ class Update extends Component {
       return (<Redirect to={'/updatePassword'}/>)
     }
 
-  
+    if(this.state.back) {
+      return (<Redirect to={'/login'}/>)
+    }
+    
     return (
       <div className="row " id="Body">
         <div className="medium-12 columns">
+        <a href="" onClick={this.goBack} className="goBack">Go Back</a>
+
           <a href="" className="button btnConfig" onClick={this.updateEmailFunction}>Update Email</a>
           <a href="" className="button success btnConfig" onClick={this.updatePasswordFunction}>Update Passowrd</a>
           <h1></h1>

@@ -23,7 +23,8 @@ class ForgotPassword extends Component {
       otpVerified: false,
       updatePassword: false,
       isAuthorized: false,
-      passwordUpdated: false
+      passwordUpdated: false,
+      back: false
      };
  
     //  this.update = this.update.bind(this);
@@ -125,10 +126,18 @@ class ForgotPassword extends Component {
     });
   }
 
+  goBack = () => {
+    this.setState({back: true});
+  }
+  
   render() {
     // if(!this.state.isAuthorized){
     //   return (<Redirect to={'/login'}/>)
     // }
+
+    if(this.state.back) {
+      return (<Redirect to={'/login'}/>)
+    }
 
     if(this.state.passwordUpdated) {
       return (<Redirect to={'/login'}/>)
@@ -138,6 +147,8 @@ class ForgotPassword extends Component {
     return (
         <div className="row" id="Body">
           <div className="medium-5 columns left">
+          <a href="" onClick={this.goBack} className="goBack">Go Back</a>
+
           <h4>Forgot Password</h4>
 
           {!this.state.otpVerified && <input type="email" name="email"  placeholder="Email" onChange={this.onChange}/> }

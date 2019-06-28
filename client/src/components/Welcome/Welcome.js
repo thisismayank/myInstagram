@@ -14,7 +14,8 @@ class Welcome extends Component {
       redirectToReferrer: false,
       redirectToUpdate: false,
       name:'',
-      isAuthorized: false
+      isAuthorized: false,
+      checkDone: false
     };
 
     // this.getUserFeed = this
@@ -32,9 +33,38 @@ class Welcome extends Component {
   }
 
   // On initialization
-  componentWillMount() {
-      this.getFiles();
-    }
+  // componentWillMount() {
+  //     this.getFiles();
+  //   }
+
+    // On initialization
+    componentWillMount() {
+      // this.isAuthorizedFunction();
+      let token = localStorage.getItem('token');
+      if(token) {
+        this.isAuthorizedFunction();
+      } else {
+        this.getFiles();
+      }
+      // this.getUserFiles()
+     }
+  
+     // check for authorization
+     isAuthorizedFunction() {
+      let token = localStorage.getItem('token');
+      let state = {
+        token: token
+      }
+  
+      PostData('verifyToken', state).then((result) => {
+        let responseJson = result;
+          if(responseJson.success) {         
+            // this.setState({token: token});
+            this.setState({isAuthorized: true})
+            this.setState({checkDone: true})
+          }
+       });
+     }
 
     getFiles = () => {
       let postData = {}; 
@@ -55,6 +85,11 @@ class Welcome extends Component {
     }
     
   render() {
+
+    if(this.state.isAuthorized && this.state.checkDone) {
+      return (<Redirect to={'home'} />)
+    }
+
     return (
       <div className="row " id="Body">
         <div className="medium-12 columns">

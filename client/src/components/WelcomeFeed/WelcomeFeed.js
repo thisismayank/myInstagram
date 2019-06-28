@@ -28,6 +28,8 @@ class WelcomeFeed extends Component {
               <div className="class4">
                 <p className="file-name">
                 <b>{data.fileName}</b>
+                {/* {console.log('../../images/' + data.fileName + '.jpg')} */}
+                <img src={require('../../images/'+ data.fileName + '.jpg')}/>
                 {/* <Linkify>{data.feed}</Linkify> */}
                 <br/>
                 
