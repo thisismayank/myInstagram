@@ -73,9 +73,13 @@ class Home extends Component {
   getFiles = () => {
 
     let url = ''
+    let token = localStorage.getItem('token');
+    let state = {
+      token: token
+    }
     let data = {};
 
-      PostData(url, data).then((result) => {
+      PostData(url, state).then((result) => {
         console.log(result);
         let responseJson = result;
         this.setState({data: responseJson});
@@ -178,6 +182,7 @@ class Home extends Component {
           <a href="" onClick={this.viewFavorites} className="logout">View Favorites</a>
 
           </div>
+          <hr />
       {/* {this.state.viewFavorites && this.state.favoritesFetched && <UserFeed feedData = {this.state.data} onLike={this.like} onDisLike={this.disLike} /> } */}
        <WelcomeFeed feedData = {this.state.data} fromUserFeed={true} onLike={this.like} onDisLike={this.disLike} btnDisable={false}/>
         </div>

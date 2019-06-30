@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router-dom';
 import {PostData} from '../../services/PostData';
-import Linkify from 'react-linkify';
-// import './Update.css';
-import TimeAgo from 'react-timeago';
+
 class ForgotPassword extends Component {
 
   constructor(props){
@@ -24,7 +22,8 @@ class ForgotPassword extends Component {
       updatePassword: false,
       isAuthorized: false,
       passwordUpdated: false,
-      back: false
+      back: false,
+      errorMessageOtp: false
      };
  
     //  this.update = this.update.bind(this);
@@ -99,11 +98,15 @@ class ForgotPassword extends Component {
    PostData('verifyOTP', state).then((result) => {
      let responseJson = result;
      if(responseJson.success) {         
+      this.setState({errorMessageOtp: false})
+
       //  localStorage.setItem('token',JSON.stringify(responseJson.data.token));
        this.setState({otpSent: true});
       //  this.setState({token: responseJson.data.token});
        this.setState({otpVerified: true});
-     }  
+     } else if(responseJson.success === false && responseJson.redirectTo === 'wrongotp') {
+        this.setState({errorMessageOtp: true})
+     }
     });
   }
 
@@ -157,10 +160,11 @@ class ForgotPassword extends Component {
           
           {this.state.otpSent && !this.state.otpVerified && <input type="number" name="otp"  placeholder="OTP" onChange={this.onChange}/> }
           {this.state.otpSent && !this.state.otpVerified && <input type="submit" className="button success" value="Verify OTP" onClick={this.verifyOtpFunction}/> }
-          
+          {this.state.errorMessageOtp && <span className='errorMessage' style={{color: 'red', fontStyle:'italic', float: 'right', fontWeight: 700}}>* Wrong OTP entered</span>}          
+
           {this.state.otpSent && this.state.otpVerified && <input type="password" name="newPassword"  placeholder="New Password" onChange={this.onChange}/>}
           {this.state.otpSent && this.state.otpVerified && <input type="password" name="confirmPassword"  placeholder="Re-enter Password" onChange={this.onChange}/>}
-          {this.state.otpSent && this.state.otpVerified && this.state.samePassword && <span>{this.state.errorMessage}</span> } 
+          {this.state.otpSent && this.state.otpVerified && this.state.samePassword && <span style={{color: 'red', fontStyle:'italic', float: 'right', fontWeight: 700}}>{this.state.errorMessage}</span> } 
           {this.state.otpSent && this.state.otpVerified && <input type="submit" className="button success" value="Update" onClick={this.checkPasswords}/>}
           {/* <a href="/signup">Registration</a> */}
           </div>

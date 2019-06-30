@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router-dom';
 import {PostData} from '../../services/PostData';
-import Linkify from 'react-linkify';
-// import './Update.css';
-import TimeAgo from 'react-timeago';
+
 class UpdateEmail extends Component {
 
   constructor(props){
@@ -79,7 +77,8 @@ class UpdateEmail extends Component {
     this.setState({token: token});
     let state = {
     //   userCode: this.state.userCode,
-      email: this.state.email
+      email: this.state.email,
+      token: token
     }
    PostData('generateOTP', state).then((result) => {
      let responseJson = result;

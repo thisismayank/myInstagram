@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
-// import Linkify from 'react-linkify';
-// import './UserFeed.css';
-// import TimeAgo from 'react-timeago';
+
 class WelcomeFeed extends Component {
 
   constructor(props){
@@ -10,9 +8,9 @@ class WelcomeFeed extends Component {
     
   }
 
+
   render() {
     
-  // {console.log('props',this.props)}
     let userFeed = this
       .props
       .feedData
@@ -28,27 +26,27 @@ class WelcomeFeed extends Component {
               <div className="class4">
                 <p className="file-name">
                 <b>{data.fileName}</b>
-                {/* {console.log('../../images/' + data.fileName + '.jpg')} */}
-                <img src={require('../../images/'+ data.fileName + '.jpg')}/>
-                {/* <Linkify>{data.feed}</Linkify> */}
+                <img src={require('../../images/'+ data.fileName + '.jpg')} style={{height: 100, width: 100}}/>
+
                 <br/>
                 
-                {/* <TimeAgo date={this.props.convertTime(data.created)} /> */}
                 </p>
                
               </div>    
             </div>
             {this.props.fromUserFeed &&
-            <div className="small-12 medium-2 columns add-friend">
+            <div className="small-12 medium-2 columns">
               <div className="add-friend-action">
-              <button className="button secondary small btnConfig" disabled={this.props.btnDisbale} onClick={() => this.props.onLike(data.id)} >
-              <i className="fa fa-user-times" aria-hidden="true"></i>
+             {!data.liked && <button className="button secondary small btnConfig" disabled={this.props.btnDisbale} onClick={() => this.props.onLike(data.id)} >
               Like
-            </button>
+             </button> }
             <button>
-              <i className="fa fa-user-times" aria-hidden="true"></i>
               {data.numberOfLikes}
             </button>
+            {data.liked && <button>
+              <span className="likedConfig" style={{marginLeft: 10, color: 'green'}}>Liked</span>
+                  
+            </button>}
               </div>
             </div>
             }

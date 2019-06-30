@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router-dom';
 import {PostData} from '../../services/PostData';
-import Linkify from 'react-linkify';
-// import './Update.css';
-import TimeAgo from 'react-timeago';
+
 class VerifyOtp extends Component {
 
   constructor(props){
@@ -60,33 +58,7 @@ class VerifyOtp extends Component {
   onChange(event){
     this.setState({[event.target.name]:event.target.value});
    }
-   
-//   checkPasswords = () => {
-//     if(this.state.newPassword !== '' && this.state.otpVerified && this.state.newPassword === this.state.confirmPassword) {
-//       this.updatePassword();
-//     } else {
-//       this.setState({samePassword: true});
-//       this.setState({errorMessage: "Passowrds don't match"}); 
-//     }
-//   }
-   
-//   sendOtpFunction() {
-//     let token = localStorage.getItem('token');
-//     this.setState({token: token});
-//     let state = {
-//     //   userCode: this.state.userCode,
-//       email: this.state.email
-//     }
-//    PostData('generateOTP', state).then((result) => {
-//      let responseJson = result;
-//      if(responseJson.success) {         
-//       //  localStorage.setItem('token',JSON.stringify(responseJson.data.token));
-//        this.setState({otpSent: true});
-//     //    this.setState({token: token});
-//     //    this.setState({isUpdated: true});
-//      }
-//     });
-//   }
+
    
   verifyOtpFunction() {
     let state = {
@@ -106,24 +78,6 @@ class VerifyOtp extends Component {
     });
   }
 
-//   updatePassword() {
-//     let state = {
-//       token: this.state.token,
-//     //   userCode: this.state.userCode,
-//       password: this.state.newPassword
-//     }
-//    PostData('updatePassword', state).then((result) => {
-//      let responseJson = result;
-//      if(responseJson.success) {   
-//        localStorage.removeItem('token');  
-//        this.setState({passwordUpdated: true});    
-//       //  localStorage.setItem('token',JSON.stringify(responseJson.data.token));
-//       //  this.setState({otpSent: true});
-//       //  this.setState({token: responseJson.data.token});
-//       //  this.setState({isUpdated: true});
-//      }  
-//     });
-//   }
 
   render() {
     // if(!this.state.isAuthorized){

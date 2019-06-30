@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router-dom';
 import {PostData} from '../../services/PostData';
-import Linkify from 'react-linkify';
+
 import './Update.css';
-import TimeAgo from 'react-timeago';
+
 class Update extends Component {
 
   constructor(props){

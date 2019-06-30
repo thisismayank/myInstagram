@@ -23,7 +23,6 @@ router.post('/likes/:id', (req, res)=> {
     let payload = null;  
     let userId;
     let error = false;
-    // console.log(jwt.verify(JSON.parse(body.token), SECRET_KEY));
 
     if(body.token) {
         try {
@@ -32,8 +31,6 @@ router.post('/likes/:id', (req, res)=> {
             error = true; 
         }
     }
-
-    // console.log()
     if(error) {
         res.status(200).send({success: false, message: 'unauthorized', redirectTo:'login'});
     } else {

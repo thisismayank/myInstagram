@@ -1,7 +1,4 @@
 import React, {Component} from 'react';
-// import Linkify from 'react-linkify';
-// import './UserFeed.css';
-// import TimeAgo from 'react-timeago';
 class WelcomeFeed extends Component {
 
   constructor(props){
@@ -29,20 +26,15 @@ class WelcomeFeed extends Component {
                 <p className="file-name">
                 <b>{data.fileName}</b>
                 <img src={require('../../images/'+ data.fileName + '.jpg')}/>
-                {/* <Linkify>{data.feed}</Linkify> */}
+
                 <br/>
                 
-                {/* <TimeAgo date={this.props.convertTime(data.created)} /> */}
                 </p>
                
               </div>    
             </div>
             <div className="small-12 medium-2 columns add-friend">
               <div className="add-friend-action">
-              {/* <button className="button secondary small" onClick={() => this.props.onLike(data.id)} >
-              <i className="fa fa-user-times" aria-hidden="true"></i>
-              Like
-            </button> */}
             <button className="button secondary small" onClick={() => this.props.onDisLike(data.id)} >
               <i className="fa fa-user-times" aria-hidden="true"></i>
               DisLike

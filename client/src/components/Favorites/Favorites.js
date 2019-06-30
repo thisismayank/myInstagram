@@ -1,11 +1,10 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router-dom';
-// import './Home.css';
+
 import {PostData} from '../../services/PostData';
 import UserFeed from "../UserFeed/UserFeed";
 import WelcomeFeed from "../WelcomeFeed/WelcomeFeed";
-// import ReactConfirmAlert, { confirmAlert } from 'react-confirm-alert'; 
-import '../../styles/react-confirm-alert.css';
+
 
 class Favorites extends Component {
  

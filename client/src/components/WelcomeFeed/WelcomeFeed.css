@@ -8,3 +8,8 @@
     pointer-events: none;
     cursor: not-allowed;
 }
+
+.likedConfig {
+    margin-right: 10%;
+    color: red;
+}

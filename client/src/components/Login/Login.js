@@ -17,7 +17,8 @@ class Login extends Component {
      accountActivationPending: false,
      isAuthorized: false,
      token: '',
-     checkDone: false
+     checkDone: false,
+     errorMessage: false
     };
 
     this.login = this.login.bind(this);
@@ -64,7 +65,10 @@ class Login extends Component {
        let responseJson = result;
        if (!responseJson.success && responseJson.redirectTo === 'verifyOTP') {
          this.setState({accountActivationPending: true});
+       } else if(!responseJson.success && responseJson.redirectTo === 'error') {
+        this.setState({errorMessage: true})
        } else if (responseJson.token) { 
+        this.setState({errorMessage: false})
         // if(responseJson.userData.token) {        
          localStorage.setItem('token',JSON.stringify(responseJson.token));
          this.setState({redirectToReferrer: true});
@@ -85,9 +89,9 @@ class Login extends Component {
 
   render() {
 
-    if(this.state.isAuthorized && this.state.checkDone) {
-      return (<Redirect to={'home'} />)
-    }
+  if(this.state.isAuthorized && this.state.checkDone) {
+    return (<Redirect to={'home'} />)
+  }
 
     if(this.state.accountActivationPending) {
       return (<Redirect to={'verifyOtp'} />)
@@ -110,6 +114,7 @@ class Login extends Component {
           <input type="text" name="username" placeholder="User Code" onChange={this.onChange}/>
           {/* <label>Password</label> */}
           <input type="password" name="password"  placeholder="Password" onChange={this.onChange}/>
+          {this.state.errorMessage && <span className='errorMessage'>* Wrong username or password</span>}
           <input type="submit" className="button success" value="Login" onClick={this.login}/>
           <a href="/signup">Registration</a>
           <button className='btn btn-danger'><a href="/forgotPassword" className="btnConfig" onClick={this.forgotPasswordFunction}>Forgot Password?</a></button>

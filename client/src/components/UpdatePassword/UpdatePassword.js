@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router-dom';
 import {PostData} from '../../services/PostData';
-import Linkify from 'react-linkify';
+
 // import './Update.css';
-import TimeAgo from 'react-timeago';
 class UpdatePassword extends Component {
 
   constructor(props){
@@ -69,7 +68,7 @@ class UpdatePassword extends Component {
       this.updatePassword();
     } else {
       this.setState({samePassword: true});
-      this.setState({errorMessage: "Passowrds don't match"}); 
+      this.setState({errorMessage: "* Passwords don't match"}); 
     }
   }
    
@@ -78,7 +77,8 @@ class UpdatePassword extends Component {
     this.setState({token: token});
     let state = {
     //   userCode: this.state.userCode,
-      email: this.state.email
+      email: this.state.email,
+      token: token
     }
    PostData('generateOTP', state).then((result) => {
      let responseJson = result;
@@ -92,6 +92,7 @@ class UpdatePassword extends Component {
   }
    
   verifyOtpFunction() {
+    let token = localStorage.getItem('token');
     let state = {
       token: this.state.token,
     //   userCode: this.state.userCode,
@@ -162,7 +163,7 @@ class UpdatePassword extends Component {
           
           {this.state.otpSent && this.state.otpVerified && <input type="password" name="newPassword"  placeholder="New Password" onChange={this.onChange}/>}
           {this.state.otpSent && this.state.otpVerified && <input type="password" name="confirmPassword"  placeholder="Re-enter Password" onChange={this.onChange}/>}
-          {this.state.otpSent && this.state.otpVerified && this.state.samePassword && <span>{this.state.errorMessage}</span> } 
+          {this.state.otpSent && this.state.otpVerified && this.state.samePassword && <span style={{color: 'red', fontStyle:'italic', float: 'right', fontWeight: 700}}>{this.state.errorMessage}</span> } 
           {this.state.otpSent && this.state.otpVerified && <input type="submit" className="button success" value="Update" onClick={this.checkPasswords}/>}
           {/* <a href="/signup">Registration</a> */}
           </div>

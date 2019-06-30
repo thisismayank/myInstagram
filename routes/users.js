@@ -34,16 +34,9 @@ router.post('/fetchUsers', (req, res) => {
 //         }
 // })
 router.post('/verifyToken', (req, res)=>{
-    // console.log('here');
     let body = JSON.parse(Object.keys(req.body)[0]);  
-    // let payload = null;  
     let error = false;
  
-    // console.log(body.token);
-    // console.log(JSON.parse(body.token));
-
-    // console.log('line 45',jwt.verify(JSON.parse(body.token), SECRET_KEY));
-    // console.log('line 46',jwt.verify(body.token, SECRET_KEY));
     if(JSON.parse(body.token)) {
         try {
          jwt.verify(JSON.parse(body.token), SECRET_KEY);
@@ -52,15 +45,6 @@ router.post('/verifyToken', (req, res)=>{
             error = true; 
         }
     }
-
-        // try {
-        //     jwt.verify(req.body.token, SECRET_KEY);
-        // } catch(err) {
-        //     error = true; 
-        // }
-// console.log(error);
-// console.log(!error);
-
         if(!error) {
             res.json({success: true})
         } else {
@@ -70,10 +54,10 @@ router.post('/verifyToken', (req, res)=>{
 
 
 router.post('/login', (req, res)=>{
-    // console.log(req.body);
-    // console.log(JSON.parse(Object.keys(req.body)[0]));
-
+    // next-line to be uncommented to login as root from postman
     // let body = req.body;
+
+    // next-line to be used with front-end
     let body = JSON.parse(Object.keys(req.body)[0]);
     // console.log(body);
     User.findOne({
@@ -94,7 +78,7 @@ router.post('/login', (req, res)=>{
             let token = jwt.sign(user.dataValues, SECRET_KEY);
             res.json({token: token});
         } else {
-            res.status(200).send('Wrong Username or password');
+            res.status(200).send({success: false, message:'Wrong Username or password', redirectTo:'error'});
         }
     });
 });
@@ -135,11 +119,9 @@ router.post('/login', (req, res)=>{
 // })
 
 router.post('/generateOTP', (req, res) => {
-    // console.log(JSON.parse(Object.keys(req.body)[0]));
 
     let body = JSON.parse(Object.keys(req.body)[0]);  
-    let payload = null;  
- 
+    let payload = null;
     if(body.token) {
         try {
             payload = jwt.verify(JSON.parse(body.token), SECRET_KEY);
@@ -149,9 +131,8 @@ router.post('/generateOTP', (req, res) => {
     }
 
     let userCode = payload ? payload.userCode : body.userCode;
-    // console.log(payload);
+
     let email = body.email;
-    // let userCode = req.body.userCode;
     let otp = authUtils.generateOTP()
     User.findOne({
         where:{
@@ -161,19 +142,13 @@ router.post('/generateOTP', (req, res) => {
         }
     })
     .then(userData => {
-        // console.log('here', userData);
         userData.otp = Number(otp);
-        // console.log('here', userData);
 
-        // let user = new User(userData)
         return userData.save()
     })
     .then(userData => {
-        // console.log(userData);
         let url = body.url || 'localhost:3000';
         let text = `Your forgot password OTP is ${otp}`;        
-        // console.log(text);
-        // res.status(200).send({success: true, message: text});
         let emailUtility = emailUtils.sendEmail(userData.email, text);
         emailUtility.transporter.sendMail(emailUtility.mailOptions, (err, data)=>{
             if(err) {
@@ -187,7 +162,9 @@ router.post('/generateOTP', (req, res) => {
 
 router.post('/verifyOTP', (req, res)=>{
     let check = false;
-    let body = JSON.parse(Object.keys(req.body)[0]);    
+    // console.log('req.body', req.body);
+    let body = JSON.parse(Object.keys(req.body)[0]);
+    // console.log(body);
     let payload = null;  
  
     if(body.token) {
@@ -197,9 +174,10 @@ router.post('/verifyOTP', (req, res)=>{
             error = true; 
         }
     }
-
+    console.log('payload', payload);
     let userCode = payload ? payload.userCode : body.userCode;
-    // console.log(body.otp);
+    console.log(userCode)
+
     User.findOne({
         where: {
             email: body.email,
@@ -210,30 +188,29 @@ router.post('/verifyOTP', (req, res)=>{
     })
     .then((user, err) => {
         if(err || !user) {
-    // console.log('here1');
-
             check = true;
             return User.findOne({where: {email: body.email, isActive: true}});
         } else {
+        console.log('here');
+
             user.otp = null;
             return user.save();
         }
     })
     .then((user, err)=>{
         if(err) {
-            res.status(200).send('Some error occured');
+            res.status(200).send({success: false, message:'Some error occured'});
         }
         if(check) {
             user.loginRetryCount = user.loginRetryCount + 1;
             return user.save();
-        } else {
-            // console.log('here');            
+        } else {         
             res.status(200).send({success: true, redirectTo: '/login'});
         }
     })
     .then((user, err)=>{
         if(check) {
-            res.redirect('/');
+            res.status(200).send({success: false, message:'Wrong OTP', redirectTo:'wrongotp'});
         }
     })
 });
@@ -241,7 +218,6 @@ router.post('/verifyOTP', (req, res)=>{
 router.post('/signup', (req, res)=>{
 
     let body = JSON.parse(Object.keys(req.body)[0]);
-    // console.log(body);
     let otp;
     User.findOne({
         where: {
@@ -289,7 +265,8 @@ router.post('/signup', (req, res)=>{
 });
 
 
-router.put('/updatePassword', (req, res)=>{
+router.post('/updatePassword', (req, res)=>{
+    console.log(req.body);
     let body = JSON.parse(Object.keys(req.body)[0]);    
 
     let payload = null;  
@@ -336,7 +313,6 @@ router.put('/updateEmail', (req, res)=>{
 
     let userCode = payload ? payload.userCode : body.userCode;
     
-    // let body = req.body;
     let otp = authUtils.generateOTP();
         let data = {
             email: body.email.toString(),
